@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameBridge Pro | Exchange & Swap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #020617;
+            color: #f8fafc;
+            scroll-behavior: smooth;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .discord-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .discord-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5);
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Animación de pulso para el estado online */
+        .online-indicator {
+            position: relative;
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .online-indicator::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #22c55e;
+            border-radius: 50%;
+            animation: ripple 2s infinite;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black min-h-screen">
+
+    <!-- Configuración Global -->
+    <script>
+        const DISCORD_LINK = "https://discord.gg/4pRUqVKYnp";
+        
+        function redirectDiscord() {
+            window.open(DISCORD_LINK, '_blank');
+        }
+    </script>
+
+    <!-- Barra de Navegación -->
+    <nav class="fixed w-full z-50 top-0 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center bg-black/50 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 shadow-2xl">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30">
+                    <i class="fas fa-random text-white text-lg"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight leading-none uppercase">GB<span class="text-indigo-400">PRO</span></span>
+                    <span class="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Bridge System</span>
+                </div>
+            </div>
+            
+            <div class="hidden md:flex space-x-8 text-sm font-bold uppercase tracking-widest text-slate-400">
+                <a href="#calculadora" class="hover:text-white transition-colors">Calculadora</a>
+                <a href="#proceso" class="hover:text-white transition-colors">Proceso</a>
+            </div>
+
+            <button onclick="redirectDiscord()" class="discord-btn bg-[#5865F2] hover:bg-[#4752C4] text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center shadow-lg shadow-indigo-500/20">
+                <i class="fab fa-discord mr-2 text-lg"></i> UNIRSE
+            </button>
+        </div>
+    </nav>
+
+    <!-- Sección Hero -->
+    <header class="pt-48 pb-20 px-6 text-center">
+        <div class="max-w-4xl mx-auto space-y-8">
+            <div class="inline-flex items-center bg-green-500/10 border border-green-500/20 px-4 py-1 rounded-full">
+                <span class="online-indicator"></span>
+                <span class="text-[10px] font-black text-green-400 uppercase tracking-[0.2em]">Servicio Disponible 24/7</span>
+            </div>
+            <h1 class="text-6xl md:text-8xl font-black leading-none tracking-tighter">
+                MUEVE TU <span class="gradient-text">CAPITAL</span> SIN LÍMITES
+            </h1>
+            <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto font-medium">
+                Transferencias seguras entre servidores. Cobramos una comisión fija en dinero real y un porcentaje in-game por gestión de riesgo.
+            </p>
+        </div>
+    </header>
+
+    <!-- Sección Calculadora -->
+    <section id="calculadora" class="max-w-6xl mx-auto px-6 py-12">
+        <div class="glass-panel rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl">
+            <div class="grid lg:grid-cols-12">
+                
+                <!-- Columna Izquierda: Inputs -->
+                <div class="lg:col-span-7 p-8 md:p-16 space-y-12">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-3xl font-bold">Simulador de Swap</h2>
+                        <i class="fas fa-calculator text-slate-700 text-2xl"></i>
+                    </div>
+                    
+                    <div class="space-y-10">
+                        <!-- Origen -->
+                        <div class="group">
+                            <label class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Monto en Servidor Origen</label>
+                            <div class="flex items-center bg-black/40 border border-white/5 group-focus-within:border-indigo-500/50 rounded-3xl p-6 transition-all">
+                                <input type="number" id="gameIn" value="5000000" class="bg-transparent text-4xl font-bold w-full outline-none" oninput="calculate()">
+                                <span class="text-slate-600 font-black text-xl ml-4">CASH</span>
+                            </div>
+                        </div>
+
+                        <!-- Icono central de flujo -->
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-1 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                            <div class="w-12 h-12 rounded-full border border-indigo-500/30 flex items-center justify-center bg-indigo-500/10">
+                                <i class="fas fa-repeat text-indigo-400"></i>
+                            </div>
+                            <div class="flex-1 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                        </div>
+
+                        <!-- Destino -->
+                        <div class="group">
+                            <label class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Recibes en Servidor Destino</label>
+                            <div class="flex items-center bg-indigo-500/5 border border-indigo-500/20 rounded-3xl p-6">
+                                <input type="text" id="gameOut" readonly class="bg-transparent text-4xl font-bold w-full outline-none text-indigo-400 cursor-default">
+                                <span class="text-indigo-400/50 font-black text-xl ml-4 italic">FINAL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Checkout Fee Real -->
+                <div class="lg:col-span-5 bg-indigo-600 p-8 md:p-16 flex flex-col justify-between relative overflow-hidden">
+                    <!-- Decoración fondo -->
+                    <i class="fab fa-discord absolute -bottom-10 -right-10 text-[15rem] text-black/10 rotate-12 pointer-events-none"></i>
+                    
+                    <div class="relative z-10 space-y-8">
+                        <div class="flex items-center justify-between border-b border-white/20 pb-6">
+                            <h3 class="text-2xl font-black uppercase italic tracking-tighter">Coste del Bridge</h3>
+                            <span class="text-[10px] bg-white text-indigo-600 px-2 py-1 rounded font-black">PREMIUM</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-end">
+                                <span class="text-indigo-100 text-sm font-medium">Comisión In-Game (10%)</span>
+                                <span id="feeInGame" class="font-bold text-lg"></span>
+                            </div>
+                            <div class="flex justify-between items-end">
+                                <span class="text-indigo-100 text-sm font-medium">Tarifa de Gestión Real</span>
+                                <span class="font-bold text-lg">$5.00 USD</span>
+                            </div>
+                            
+                            <div class="pt-8 mt-4 border-t border-white/10">
+                                <label class="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em] mb-2 block">Total a pagar en Dinero Real</label>
+                                <div class="flex items-baseline space-x-2">
+                                    <span id="totalReal" class="text-6xl font-black tracking-tighter">$ 7.50</span>
+                                    <span class="text-indigo-200 font-bold">USD</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="redirectDiscord()" class="relative z-10 mt-12 w-full bg-white text-indigo-600 py-5 rounded-2xl font-black text-xl hover:bg-slate-100 transition-all shadow-2xl flex items-center justify-center group">
+                        SOLICITAR SWAP
+                        <i class="fas fa-arrow-right ml-3 group-hover:translate-x-2 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Beneficios Rápidos -->
+    <section id="proceso" class="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-3 gap-12">
+        <div class="space-y-4 border-l-2 border-indigo-500/30 pl-8">
+            <h4 class="text-xl font-bold">Sin Esperas</h4>
+            <p class="text-slate-500 text-sm">Contamos con stock listo en los principales servidores. Recibe tu dinero en menos de 10 min.</p>
+        </div>
+        <div class="space-y-4 border-l-2 border-indigo-500/30 pl-8 text-indigo-400">
+            <h4 class="text-xl font-bold">Privacidad Total</h4>
+            <p class="text-slate-300 text-sm">Métodos de entrega discretos para evitar sospechas de los administradores del juego.</p>
+        </div>
+        <div class="space-y-4 border-l-2 border-indigo-500/30 pl-8">
+            <h4 class="text-xl font-bold">Soporte Humano</h4>
+            <p class="text-slate-500 text-sm">Nada de bots complicados. Hablas directamente con el Staff en nuestro servidor.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center">
+        <div class="flex justify-center space-x-8 mb-6 grayscale opacity-50">
+            <i class="fab fa-cc-paypal text-2xl"></i>
+            <i class="fab fa-bitcoin text-2xl"></i>
+            <i class="fas fa-wallet text-2xl"></i>
+        </div>
+        <p class="text-slate-600 text-[10px] font-bold uppercase tracking-widest">
+            © 2025 GameBridge Pro - Expertos en Arbitraje de Divisas Virtuales
+        </p>
+    </footer>
+
+    <script>
+        // Lógica de Precios
+        const FEE_CONFIG = {
+            gamePercent: 0.10, // 10% de comisión del juego
+            baseRealFee: 5.00,  // $5 USD base
+            extraPerMillion: 0.50 // $0.50 adicionales por cada 1M movido
+        };
+
+        function calculate() {
+            const input = document.getElementById('gameIn');
+            const output = document.getElementById('gameOut');
+            const feeInGame = document.getElementById('feeInGame');
+            const totalReal = document.getElementById('totalReal');
+
+            let val = parseFloat(input.value) || 0;
+
+            // Cálculo In-Game
+            let gameComm = val * FEE_CONFIG.gamePercent;
+            let finalGame = val - gameComm;
+
+            // Cálculo Dinero Real
+            let finalReal = FEE_CONFIG.baseRealFee + (val / 1000000 * FEE_CONFIG.extraPerMillion);
+
+            // Inyectar valores
+            output.value = Math.floor(finalGame).toLocaleString('es-ES');
+            feeInGame.innerText = "-" + Math.floor(gameComm).toLocaleString('es-ES');
+            totalReal.innerText = "$ " + finalReal.toFixed(2);
+        }
+
+        // Inicializar
+        window.onload = calculate;
+    </script>
+</body>
+</html>
+
