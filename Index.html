@@ -132,7 +132,7 @@
                         <div class="group">
                             <label class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Monto en Servidor Origen</label>
                             <div class="flex items-center bg-black/40 border border-white/5 group-focus-within:border-indigo-500/50 rounded-3xl p-6 transition-all">
-                                <input type="number" id="gameIn" value="5000000" class="bg-transparent text-4xl font-bold w-full outline-none" oninput="calculate()">
+                                <input type="number" id="gameIn" value="500000" class="bg-transparent text-4xl font-bold w-full outline-none" oninput="calculate()">
                                 <span class="text-slate-600 font-black text-xl ml-4">CASH</span>
                             </div>
                         </div>
@@ -170,18 +170,18 @@
 
                         <div class="space-y-4">
                             <div class="flex justify-between items-end">
-                                <span class="text-indigo-100 text-sm font-medium">Comisión In-Game (10%)</span>
+                                <span id="labelFeeInGame" class="text-indigo-100 text-sm font-medium">Comisión In-Game</span>
                                 <span id="feeInGame" class="font-bold text-lg"></span>
                             </div>
                             <div class="flex justify-between items-end">
                                 <span class="text-indigo-100 text-sm font-medium">Tarifa de Gestión Real</span>
-                                <span class="font-bold text-lg">$5.00 USD</span>
+                                <span class="font-bold text-lg">$10.00 USD</span>
                             </div>
                             
                             <div class="pt-8 mt-4 border-t border-white/10">
                                 <label class="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em] mb-2 block">Total a pagar en Dinero Real</label>
                                 <div class="flex items-baseline space-x-2">
-                                    <span id="totalReal" class="text-6xl font-black tracking-tighter">$ 7.50</span>
+                                    <span id="totalReal" class="text-6xl font-black tracking-tighter">$ 10.00</span>
                                     <span class="text-indigo-200 font-bold">USD</span>
                                 </div>
                             </div>
@@ -226,31 +226,30 @@
     </footer>
 
     <script>
-        // Lógica de Precios
-        const FEE_CONFIG = {
-            gamePercent: 0.10, // 10% de comisión del juego
-            baseRealFee: 5.00,  // $5 USD base
-            extraPerMillion: 0.50 // $0.50 adicionales por cada 1M movido
-        };
-
+        // Lógica de Precios Actualizada
         function calculate() {
             const input = document.getElementById('gameIn');
             const output = document.getElementById('gameOut');
             const feeInGame = document.getElementById('feeInGame');
+            const labelFeeInGame = document.getElementById('labelFeeInGame');
             const totalReal = document.getElementById('totalReal');
 
             let val = parseFloat(input.value) || 0;
 
+            // Determinar porcentaje de comisión in-game
+            let percent = (val <= 500000) ? 0.30 : 0.40;
+            
             // Cálculo In-Game
-            let gameComm = val * FEE_CONFIG.gamePercent;
+            let gameComm = val * percent;
             let finalGame = val - gameComm;
 
-            // Cálculo Dinero Real
-            let finalReal = FEE_CONFIG.baseRealFee + (val / 1000000 * FEE_CONFIG.extraPerMillion);
+            // Cálculo Dinero Real (Tarifa fija de $10 USD)
+            let finalReal = 10.00;
 
             // Inyectar valores
             output.value = Math.floor(finalGame).toLocaleString('es-ES');
             feeInGame.innerText = "-" + Math.floor(gameComm).toLocaleString('es-ES');
+            labelFeeInGame.innerText = `Comisión In-Game (${(percent * 100)}%)`;
             totalReal.innerText = "$ " + finalReal.toFixed(2);
         }
 
