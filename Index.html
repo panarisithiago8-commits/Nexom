@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -37,7 +37,12 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Animación de pulso para el estado online */
+        .mode-btn.active {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #6366f1;
+        }
+
         .online-indicator {
             position: relative;
             display: inline-block;
@@ -69,9 +74,35 @@
     <!-- Configuración Global -->
     <script>
         const DISCORD_LINK = "https://discord.gg/4pRUqVKYnp";
+        let currentMode = 'swap'; // 'swap' o 'compra'
         
         function redirectDiscord() {
             window.open(DISCORD_LINK, '_blank');
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Actualizar textos visuales según el modo
+            const labelInput = document.getElementById('labelInput');
+            const destContainer = document.getElementById('destContainer');
+            const realFeeContainer = document.getElementById('realFeeContainer');
+            const inGameFeeContainer = document.getElementById('inGameFeeContainer');
+
+            if (mode === 'swap') {
+                labelInput.innerText = "Monto en Servidor Origen";
+                destContainer.style.display = "block";
+                inGameFeeContainer.style.opacity = "1";
+                realFeeContainer.style.opacity = "0.3";
+            } else {
+                labelInput.innerText = "Monto de Plata Deseado";
+                destContainer.style.display = "none";
+                inGameFeeContainer.style.opacity = "0.3";
+                realFeeContainer.style.opacity = "1";
+            }
+            calculate();
         }
     </script>
 
@@ -100,7 +131,7 @@
     </nav>
 
     <!-- Sección Hero -->
-    <header class="pt-48 pb-20 px-6 text-center">
+    <header class="pt-48 pb-10 px-6 text-center">
         <div class="max-w-4xl mx-auto space-y-8">
             <div class="inline-flex items-center bg-green-500/10 border border-green-500/20 px-4 py-1 rounded-full">
                 <span class="online-indicator"></span>
@@ -110,86 +141,95 @@
                 MUEVE TU <span class="gradient-text">CAPITAL</span> SIN LÍMITES
             </h1>
             <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto font-medium">
-                Transferencias seguras entre servidores. Cobramos una comisión fija en dinero real y un porcentaje in-game por gestión de riesgo.
+                Selecciona si deseas mover plata entre servidores o adquirirla directamente con dinero real.
             </p>
         </div>
     </header>
 
+    <!-- Selector de Modo -->
+    <div class="max-w-md mx-auto px-6 mb-8 flex gap-4">
+        <button onclick="setMode('swap')" class="mode-btn active flex-1 py-3 rounded-xl border border-white/10 text-xs font-bold uppercase tracking-widest transition-all">Swap Servidores</button>
+        <button onclick="setMode('compra')" class="mode-btn flex-1 py-3 rounded-xl border border-white/10 text-xs font-bold uppercase tracking-widest transition-all">Compra Directa</button>
+    </div>
+
     <!-- Sección Calculadora -->
-    <section id="calculadora" class="max-w-6xl mx-auto px-6 py-12">
+    <section id="calculadora" class="max-w-6xl mx-auto px-6 py-6">
         <div class="glass-panel rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl">
             <div class="grid lg:grid-cols-12">
                 
                 <!-- Columna Izquierda: Inputs -->
                 <div class="lg:col-span-7 p-8 md:p-16 space-y-12">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-3xl font-bold">Simulador de Swap</h2>
+                        <h2 class="text-3xl font-bold">Simulador</h2>
                         <i class="fas fa-calculator text-slate-700 text-2xl"></i>
                     </div>
                     
                     <div class="space-y-10">
                         <!-- Origen -->
                         <div class="group">
-                            <label class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Monto en Servidor Origen</label>
+                            <label id="labelInput" class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Monto en Servidor Origen</label>
                             <div class="flex items-center bg-black/40 border border-white/5 group-focus-within:border-indigo-500/50 rounded-3xl p-6 transition-all">
                                 <input type="number" id="gameIn" value="500000" class="bg-transparent text-4xl font-bold w-full outline-none" oninput="calculate()">
                                 <span class="text-slate-600 font-black text-xl ml-4">CASH</span>
                             </div>
                         </div>
 
-                        <!-- Icono central de flujo -->
-                        <div class="flex items-center space-x-6">
-                            <div class="flex-1 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                            <div class="w-12 h-12 rounded-full border border-indigo-500/30 flex items-center justify-center bg-indigo-500/10">
-                                <i class="fas fa-repeat text-indigo-400"></i>
+                        <!-- Destino (Solo visible en Swap) -->
+                        <div id="destContainer" class="space-y-10">
+                            <div class="flex items-center space-x-6">
+                                <div class="flex-1 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                                <div class="w-12 h-12 rounded-full border border-indigo-500/30 flex items-center justify-center bg-indigo-500/10">
+                                    <i class="fas fa-repeat text-indigo-400"></i>
+                                </div>
+                                <div class="flex-1 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
                             </div>
-                            <div class="flex-1 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                        </div>
 
-                        <!-- Destino -->
-                        <div class="group">
-                            <label class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Recibes en Servidor Destino</label>
-                            <div class="flex items-center bg-indigo-500/5 border border-indigo-500/20 rounded-3xl p-6">
-                                <input type="text" id="gameOut" readonly class="bg-transparent text-4xl font-bold w-full outline-none text-indigo-400 cursor-default">
-                                <span class="text-indigo-400/50 font-black text-xl ml-4 italic">FINAL</span>
+                            <div class="group">
+                                <label class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block">Recibes en Servidor Destino</label>
+                                <div class="flex items-center bg-indigo-500/5 border border-indigo-500/20 rounded-3xl p-6">
+                                    <input type="text" id="gameOut" readonly class="bg-transparent text-4xl font-bold w-full outline-none text-indigo-400 cursor-default">
+                                    <span class="text-indigo-400/50 font-black text-xl ml-4 italic">FINAL</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Columna Derecha: Checkout Fee Real -->
+                <!-- Columna Derecha: Checkout -->
                 <div class="lg:col-span-5 bg-indigo-600 p-8 md:p-16 flex flex-col justify-between relative overflow-hidden">
-                    <!-- Decoración fondo -->
                     <i class="fab fa-discord absolute -bottom-10 -right-10 text-[15rem] text-black/10 rotate-12 pointer-events-none"></i>
                     
                     <div class="relative z-10 space-y-8">
                         <div class="flex items-center justify-between border-b border-white/20 pb-6">
-                            <h3 class="text-2xl font-black uppercase italic tracking-tighter">Coste del Bridge</h3>
-                            <span class="text-[10px] bg-white text-indigo-600 px-2 py-1 rounded font-black">PREMIUM</span>
+                            <h3 class="text-2xl font-black uppercase italic tracking-tighter">Resumen</h3>
+                            <span class="text-[10px] bg-white text-indigo-600 px-2 py-1 rounded font-black uppercase">Detalles</span>
                         </div>
 
                         <div class="space-y-4">
-                            <div class="flex justify-between items-end">
-                                <span id="labelFeeInGame" class="text-indigo-100 text-sm font-medium">Comisión In-Game</span>
-                                <span id="feeInGame" class="font-bold text-lg"></span>
+                            <!-- Comisión In-Game (Swap) -->
+                            <div id="inGameFeeContainer" class="flex justify-between items-end transition-opacity">
+                                <span id="labelFeeInGame" class="text-indigo-100 text-sm font-medium">Comisión In-Game (Swap)</span>
+                                <span id="feeInGame" class="font-bold text-lg">0</span>
                             </div>
-                            <div class="flex justify-between items-end">
-                                <span class="text-indigo-100 text-sm font-medium">Tarifa de Gestión Real</span>
-                                <span class="font-bold text-lg">$10.00 USD</span>
+                            <!-- Tarifa Real (Compra) -->
+                            <div id="realFeeContainer" class="flex justify-between items-end opacity-30 transition-opacity">
+                                <span class="text-indigo-100 text-sm font-medium">Tarifa Dinero Real</span>
+                                <span id="realFeeLine" class="font-bold text-lg">$0.00 USD</span>
                             </div>
                             
                             <div class="pt-8 mt-4 border-t border-white/10">
-                                <label class="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em] mb-2 block">Total a pagar en Dinero Real</label>
+                                <label class="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em] mb-2 block italic">Total a pagar en Dinero Real</label>
                                 <div class="flex items-baseline space-x-2">
-                                    <span id="totalReal" class="text-6xl font-black tracking-tighter">$ 10.00</span>
+                                    <span id="totalReal" class="text-6xl font-black tracking-tighter">$ 0.00</span>
                                     <span class="text-indigo-200 font-bold">USD</span>
                                 </div>
+                                <p class="text-[9px] text-indigo-300 mt-2">* Sujeto a promociones vigentes en Discord.</p>
                             </div>
                         </div>
                     </div>
 
                     <button onclick="redirectDiscord()" class="relative z-10 mt-12 w-full bg-white text-indigo-600 py-5 rounded-2xl font-black text-xl hover:bg-slate-100 transition-all shadow-2xl flex items-center justify-center group">
-                        SOLICITAR SWAP
+                        SOLICITAR AHORA
                         <i class="fas fa-arrow-right ml-3 group-hover:translate-x-2 transition-transform"></i>
                     </button>
                 </div>
@@ -198,18 +238,18 @@
     </section>
 
     <!-- Beneficios Rápidos -->
-    <section id="proceso" class="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-3 gap-12">
+    <section id="proceso" class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-12">
         <div class="space-y-4 border-l-2 border-indigo-500/30 pl-8">
-            <h4 class="text-xl font-bold">Sin Esperas</h4>
-            <p class="text-slate-500 text-sm">Contamos con stock listo en los principales servidores. Recibe tu dinero en menos de 10 min.</p>
+            <h4 class="text-xl font-bold">Swap Seguro</h4>
+            <p class="text-slate-500 text-sm">Mueve tu progreso entre servidores con comisiones competitivas del 30% o 50% según volumen.</p>
         </div>
         <div class="space-y-4 border-l-2 border-indigo-500/30 pl-8 text-indigo-400">
-            <h4 class="text-xl font-bold">Privacidad Total</h4>
-            <p class="text-slate-300 text-sm">Métodos de entrega discretos para evitar sospechas de los administradores del juego.</p>
+            <h4 class="text-xl font-bold">Compra Directa</h4>
+            <p class="text-slate-300 text-sm">Obtén 50k de plata por solo $10 USD. Entrega inmediata y discreta.</p>
         </div>
         <div class="space-y-4 border-l-2 border-indigo-500/30 pl-8">
-            <h4 class="text-xl font-bold">Soporte Humano</h4>
-            <p class="text-slate-500 text-sm">Nada de bots complicados. Hablas directamente con el Staff en nuestro servidor.</p>
+            <h4 class="text-xl font-bold">Sin Intermediarios</h4>
+            <p class="text-slate-500 text-sm">Trato directo vía Discord para garantizar la mejor tasa y seguridad en la entrega.</p>
         </div>
     </section>
 
@@ -226,31 +266,41 @@
     </footer>
 
     <script>
-        // Lógica de Precios Actualizada
         function calculate() {
             const input = document.getElementById('gameIn');
             const output = document.getElementById('gameOut');
             const feeInGame = document.getElementById('feeInGame');
             const labelFeeInGame = document.getElementById('labelFeeInGame');
+            const realFeeLine = document.getElementById('realFeeLine');
             const totalReal = document.getElementById('totalReal');
 
             let val = parseFloat(input.value) || 0;
-
-            // Determinar porcentaje de comisión in-game
-            let percent = (val <= 500000) ? 0.30 : 0.40;
             
-            // Cálculo In-Game
-            let gameComm = val * percent;
-            let finalGame = val - gameComm;
+            if (currentMode === 'swap') {
+                // Lógica de Swap (Plata por Plata)
+                let percent = (val <= 500000) ? 0.30 : 0.50;
+                let gameComm = val * percent;
+                let finalGame = val - gameComm;
 
-            // Cálculo Dinero Real (Tarifa fija de $10 USD)
-            let finalReal = 10.00;
+                output.value = Math.floor(finalGame).toLocaleString('es-ES');
+                feeInGame.innerText = "-" + Math.floor(gameComm).toLocaleString('es-ES');
+                labelFeeInGame.innerText = `Comisión In-Game (${(percent * 100)}%)`;
+                
+                realFeeLine.innerText = "$ 0.00 USD";
+                totalReal.innerText = "$ 0.00";
+            } else {
+                // Lógica de Compra Directa (Dinero Real por Plata)
+                // $10 USD por cada 50,000
+                let unidades = val / 50000;
+                let finalReal = unidades * 10;
 
-            // Inyectar valores
-            output.value = Math.floor(finalGame).toLocaleString('es-ES');
-            feeInGame.innerText = "-" + Math.floor(gameComm).toLocaleString('es-ES');
-            labelFeeInGame.innerText = `Comisión In-Game (${(percent * 100)}%)`;
-            totalReal.innerText = "$ " + finalReal.toFixed(2);
+                output.value = "---";
+                feeInGame.innerText = "N/A";
+                labelFeeInGame.innerText = "Comisión In-Game";
+                
+                realFeeLine.innerText = "$ " + finalReal.toFixed(2) + " USD";
+                totalReal.innerText = "$ " + finalReal.toFixed(2);
+            }
         }
 
         // Inicializar
